@@ -1,38 +1,38 @@
 # TimescaleDB vs. PostgreSQL Benchmark: Análise de Séries Temporais em IoT
 
-Repositório com o código SQL e material do seminário desenvolvido para a disciplina de **Banco de Dados II (BAN2002)** do curso de Ciência da Computação na **UDESC Joinville**[cite: 24, 46].
+Repositório com o código SQL e material do seminário desenvolvido para a disciplina de **Banco de Dados II (BAN2002)** do curso de Ciência da Computação na **UDESC Joinville**.
 
-O objetivo deste projeto é comparar na prática a eficiência do PostgreSQL relacional puro e da extensão **TimescaleDB** na gestão de séries temporais de alto volume, avaliando consumo em disco e tempo de execução de consultas analíticas[cite: 24, 26, 42].
+O objetivo deste projeto é comparar na prática a eficiência do PostgreSQL relacional puro e da extensão **TimescaleDB** na gestão de séries temporais de alto volume, avaliando consumo em disco e tempo de execução de consultas analíticas.
 
 ---
 
 ## 📊 Cenário dos Dados
 
-* **Aplicação:** Monitoramento contínuo de temperatura e umidade em sensores IoT[cite: 24, 27, 42].
-* **Frequência:** 1 leitura por minuto por sensor durante 30 dias[cite: 24, 42, 46].
-* **Escala:** 10 sensores gerando um total de 432.010 registros[cite: 36, 42, 46].
-* **Particionamento:** Chunks de 7 dias na Hypertable do TimescaleDB[cite: 31, 36, 46].
+* **Aplicação:** Monitoramento contínuo de temperatura e umidade em sensores IoT.
+* **Frequência:** 1 leitura por minuto por sensor durante 30 dias.
+* **Escala:** 10 sensores gerando um total de 432.010 registros.
+* **Particionamento:** Chunks de 7 dias na Hypertable do TimescaleDB.
 
 ---
 
 ## 🔬 Estrutura dos Testes
 
 1. **Demonstração 1: Hypertable e Inserção de Dados**
-   * Habilitação da extensão `timescaledb`[cite: 28, 46].
-   * Criação e conversão da tabela em Hypertable particionada por tempo[cite: 31, 36, 46].
-   * População em massa simulada via `generate_series`[cite: 36, 46].
+   * Habilitação da extensão `timescaledb`.
+   * Criação e conversão da tabela em Hypertable particionada por tempo.
+   * População em massa simulada via `generate_series`.
 2. **Demonstração 2: Comparação de Desempenho com EXPLAIN ANALYZE**
-   * Comparativo entre Tabela Comum (sem índice), Tabela Comum (com índice B-Tree) e Hypertable[cite: 38, 42, 46].
-   * Execução de três janelas de consulta: última hora, últimos 7 dias e período antigo de 30 a 14 dias atrás[cite: 24, 42, 46].
+   * Comparativo entre Tabela Comum (sem índice), Tabela Comum (com índice B-Tree) e Hypertable.
+   * Execução de três janelas de consulta: última hora, últimos 7 dias e período antigo de 30 a 14 dias atrás.
 3. **Demonstração 3: Continuous Aggregates e Compressão Colunar**
-   * Criação de view materializada contínua por hora (`sensor_hourly`)[cite: 34, 40, 46].
-   * Aplicação do armazenamento em colunas (*columnstore*) agrupado por sensor e ordenado por tempo para dados com mais de 7 dias[cite: 35, 40, 46].
+   * Criação de view materializada contínua por hora (`sensor_hourly`).
+   * Aplicação do armazenamento em colunas (*columnstore*) agrupado por sensor e ordenado por tempo para dados com mais de 7 dias.
 
 ---
 
 ## 📈 Resultados Obtidos
 
-Os testes foram executados medindo a mediana do tempo real de execução (`Execution Time`) via `EXPLAIN ANALYZE`[cite: 33, 42]:
+Os testes foram executados medindo a mediana do tempo real de execução (`Execution Time`) via `EXPLAIN ANALYZE`:
 
 | Métrica / Consulta | Tabela Comum (Sem Índice) | Tabela Comum (Com Índice) | Hypertable | Continuous Aggregate | Hypertable Comprimida |
 | :--- | :--- | :--- | :--- | :--- | :--- |
@@ -52,3 +52,21 @@ docker run -d --name timescaledb \
   -p 5432:5432 \
   -e POSTGRES_PASSWORD=suasenha \
   timescale/timescaledb:latest-pg18
+```
+
+### 2. Executar o Script SQL
+
+Conecte-se ao banco via pgAdmin ou client `psql` e execute o arquivo script contido neste repositório:
+
+```bash
+psql -h localhost -U postgres -d postgres -f Timescale_DB_Kelwin_Uriel.sql
+```
+
+---
+
+## 👥 Autores
+
+* **Kelwin Efrain Bagnhuk da Silva**
+* **Uriel Pacheco de Souza**
+* **Professor:** Prof. Dr. Fabiano Baldo
+* **Instituição:** Universidade do Estado de Santa Catarina (UDESC) - CCT
